@@ -1,12 +1,11 @@
 package com.boom.blog.controllers;
 
 import com.boom.blog.domain.dtos.CreateTagsRequest;
-import com.boom.blog.domain.dtos.TagResponse;
+import com.boom.blog.domain.dtos.TagDto;
 import com.boom.blog.domain.entities.Tag;
 import com.boom.blog.mappers.TagMapper;
 import com.boom.blog.services.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +21,19 @@ public class TagController {
     private final TagMapper tagMapper;
 
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAllTags() {
+    public ResponseEntity<List<TagDto>> getAllTags() {
        List<Tag> tags = tagService.getTags();
-       List<TagResponse> tagResponses = tags.stream().map(tagMapper::toTagResponse).toList();
-       return ResponseEntity.ok(tagResponses);
+       List<TagDto> tagRespons = tags.stream().map(tagMapper::toTagResponse).toList();
+       return ResponseEntity.ok(tagRespons);
     }
 
     @PostMapping
-    public ResponseEntity<List<TagResponse>> createTags(@RequestBody CreateTagsRequest createTagsRequest) {
+    public ResponseEntity<List<TagDto>> createTags(@RequestBody CreateTagsRequest createTagsRequest) {
      List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
 
-      List<TagResponse> createdTagResponse = savedTags.stream().map(tag -> tagMapper.toTagResponse(tag)).toList();
+      List<TagDto> createdTagDto = savedTags.stream().map(tag -> tagMapper.toTagResponse(tag)).toList();
       return new ResponseEntity<>(
-              createdTagResponse, HttpStatus.CREATED);
+              createdTagDto, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
